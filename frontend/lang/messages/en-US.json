@@ -1236,7 +1236,8 @@
   "demo": {
     "info_message_with_version": "This is a Demo for version: {version}",
     "demo_username": "Username: {username}",
-    "demo_password": "Password: {password}"
+    "demo_password": "Password: {password}",
+    "demo_mode_active": "Demo Mode Active"
   },
   "ocr-editor": {
     "ocr-editor": "Ocr editor",
