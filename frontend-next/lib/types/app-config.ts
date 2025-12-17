@@ -1,0 +1,14 @@
+export interface AppAboutConfig {
+  production: boolean;
+  version: string;
+  demoStatus: boolean;
+  allowSignup: boolean;
+  allowPasswordLogin: boolean;
+  defaultGroupSlug: string;
+  defaultHouseholdSlug: string;
+  enableOidc: boolean;
+  oidcRedirect: boolean;
+  oidcProviderName: string;
+  enableOpenai: boolean;
+  enableOpenaiImageServices: boolean;
+}
