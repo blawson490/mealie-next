@@ -52,6 +52,15 @@
           Mealie
         </v-toolbar-title>
       </v-toolbar>
+      <v-alert
+        v-if="$appInfo.demoStatus"
+        type="warning"
+        class="mx-4 mb-0"
+        :icon="$globals.icons.information"
+        prominent
+      >
+        <strong>Demo Mode Active</strong>
+      </v-alert>
       <AppLogo :size="100" />
       <v-card-title class="text-h5 justify-center pb-3">
         {{ $t('user.sign-in') }}
