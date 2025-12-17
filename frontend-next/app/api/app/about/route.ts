@@ -17,7 +17,7 @@ export async function GET() {
     defaultHouseholdSlug: "home",
     enableOidc: true,
     oidcRedirect: false,
-    oidcProviderName: "Google",
+    oidcProviderName: "SSO",
     enableOpenai: false,
     enableOpenaiImageServices: false,
   };

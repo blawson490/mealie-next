@@ -12,6 +12,7 @@ export async function fetchAppConfig(): Promise<AppConfig> {
     },
     cache: "no-store", // Always fetch fresh config
   });
+  console.log(response);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch app config: ${response.statusText}`);
