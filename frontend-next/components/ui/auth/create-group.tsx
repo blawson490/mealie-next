@@ -74,10 +74,10 @@ export function CreateGroup() {
             Keep My Recipes Private
           </Label>
         </div>
-        <Label>
+        <p className="text-xs text-muted-foreground">
           Sets your group and all recipes defaults to private. You can always
           change this later.
-        </Label>
+        </p>
         <div className="flex items-center mt-6">
           <Checkbox
             id="seed-data"
@@ -90,12 +90,12 @@ export function CreateGroup() {
             Seed Data
           </Label>
         </div>
-        <Label>
+        <p className="text-xs text-muted-foreground">
           Mealie ships with a collection of Foods, Units, and Labels that can be
           used to populate your group with helpful data for organizing your
           recipes. These are translated into the language you currently have
           selected. You can always add to or modify this data later.
-        </Label>
+        </p>
       </div>
       <div className="flex justify-end gap-4">
         <Button variant="outline" onClick={goBack} className="">

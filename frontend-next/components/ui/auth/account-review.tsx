@@ -16,9 +16,11 @@ export function AccountReview() {
     label: string;
     value: React.ReactNode;
   }) => (
-    <div className="flex justify-between items-center py-2 border-b last:border-0">
-      <span className="text-sm font-medium text-muted-foreground">{label}</span>
-      <span className="text-sm font-semibold text-right">{value}</span>
+    <div className="flex justify-between items-center py-2 border-b last:border-0 gap-4">
+    <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+      {label}
+    </span>
+      <span className="text-sm font-semibold text-right truncate">{value}</span>
     </div>
   );
 

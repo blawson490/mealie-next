@@ -63,7 +63,7 @@ export function AccountDetails() {
             required
             onBlur={handleFullNameBlur}
             onChange={(e) => {
-              updateData({ fullName: e.target.value.trim() });
+              updateData({ fullName: e.target.value });
               if (fullNameError) setFullNameError(null);
             }}
             aria-invalid={!!fullNameError}
