@@ -23,7 +23,7 @@ import { AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AppConfig, StartupInfo } from "@/lib/types/app";
-import { CredentialRow } from "./ui/custom/credential-row";
+import { CredentialRow } from "./ui/custom/auth/credential-row";
 import BasicError from "./ui/custom/basic-error";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
@@ -186,7 +186,13 @@ export function LoginForm({
                   {/* If Allowed sign up */}
                   {config.allowSignup ? (
                     <FieldDescription className="text-center pt-2">
-                      Don&apos;t have an account? <a href="#">Sign up</a>
+                      Don&apos;t have an account?{" "}
+                      <a
+                        href="/register"
+                        className="no-underline hover:underline text-primary"
+                      >
+                        Sign up
+                      </a>
                     </FieldDescription>
                   ) : (
                     <FieldDescription className="text-center">
