@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchAppConfig, fetchStartupInfo } from "@/lib/api/app";
 import type { AppConfig, StartupInfo } from "@/lib/types/app";
-import { LoginForm } from "@/components/login-form";
+import { LoginForm } from "@/components/ui/auth/login-form";
 import { ProjectLinks } from "@/components/ui/custom/auth/project-links";
 import Loader from "@/components/ui/custom/loader";
 import BasicError from "@/components/ui/custom/basic-error";

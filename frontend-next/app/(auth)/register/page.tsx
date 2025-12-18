@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { fetchAppConfig, fetchStartupInfo } from "@/lib/api/app";
 import type { AppConfig, StartupInfo } from "@/lib/types/app";
-import { LoginForm } from "@/components/login-form";
+import { LoginForm } from "@/components/ui/auth/login-form";
 import { ProjectLinks } from "@/components/ui/custom/auth/project-links";
 import Loader from "@/components/ui/custom/loader";
 import BasicError from "@/components/ui/custom/basic-error";
 import { Button } from "@/components/ui/button";
-import { RegistrationForm } from "@/components/registration-form";
+import { RegistrationForm } from "@/components/ui/auth/registration-form";
 
 export default function LoginPage() {
   const [startupInfo, setStartupInfo] = useState<StartupInfo | null>(null);

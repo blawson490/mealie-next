@@ -10,7 +10,7 @@ export async function GET() {
   const config = {
     production: false,
     version: "1.0.0",
-    demoStatus: false,
+    demoStatus: true,
     allowSignup: true,
     allowPasswordLogin: true,
     defaultGroupSlug: "home",
