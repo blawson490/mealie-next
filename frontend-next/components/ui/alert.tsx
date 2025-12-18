@@ -23,13 +23,9 @@ const alertVariants = cva(
         default: "bg-card text-card-foreground border-border",
         destructive:
           "bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200 dark:border-red-900 border-red-200 *:data-[slot=alert-description]:text-red-900/90 dark:*:data-[slot=alert-description]:text-red-200/90 *:[svg]:text-red-500 dark:*:[svg]:text-red-400",
-
-        // UPDATED INFO VARIANT
-        info: "bg-blue-50 text-blue-900 dark:bg-blue-900/20 dark:text-blue-50 dark:border-blue-800 border-blue-200 *:data-[slot=alert-description]:text-blue-900/90 dark:*:data-[slot=alert-description]:text-blue-100/90 *:[svg]:text-blue-600 dark:*:[svg]:text-blue-300",
-
+        info: "bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-50 dark:border-blue-800 border-blue-200 *:data-[slot=alert-description]:text-blue-900/90 dark:*:data-[slot=alert-description]:text-blue-100 *:[svg]:text-blue-600 dark:*:[svg]:text-blue-400",
         success:
           "bg-green-50 text-green-900 dark:bg-green-900/20 dark:text-green-200 dark:border-green-900 border-green-200 *:data-[slot=alert-description]:text-green-900/90 dark:*:data-[slot=alert-description]:text-green-200/90 *:[svg]:text-green-600 dark:*:[svg]:text-green-400",
-
         warning:
           "bg-yellow-50 text-yellow-900 dark:bg-yellow-900/20 dark:text-yellow-200 dark:border-yellow-900 border-yellow-200 *:data-[slot=alert-description]:text-yellow-900/90 dark:*:data-[slot=alert-description]:text-yellow-200/90 *:[svg]:text-yellow-600 dark:*:[svg]:text-yellow-400",
       },

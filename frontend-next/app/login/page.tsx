@@ -1,24 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { fetchAppConfig } from "@/lib/api/app-config";
-import type { AppConfig } from "@/lib/types/app-config";
-import { Loader2 } from "lucide-react";
+import { fetchAppConfig, fetchStartupInfo } from "@/lib/api/app";
+import type { AppConfig, StartupInfo } from "@/lib/types/app";
+import { LoginForm } from "@/components/login-form";
+import { ProjectLinks } from "@/components/ui/custom/project-links";
+import Loader from "@/components/ui/custom/loader";
+import BasicError from "@/components/ui/custom/basic-error";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const [startupInfo, setStartupInfo] = useState<StartupInfo | null>(null);
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function loadConfig() {
       try {
+        const startupInfo = await fetchStartupInfo();
+        setStartupInfo(startupInfo);
         const appConfig = await fetchAppConfig();
         setConfig(appConfig);
 
@@ -40,51 +40,18 @@ export default function LoginPage() {
     loadConfig();
   }, []);
 
-  const handlePasswordLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      // TODO: Implement actual login API call
-      // Placeholder for actual authentication
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      router.push("/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleOidcLogin = () => {
-    // Use window.location.href for OIDC as it requires full page redirect to IdP
-    window.location.href = "/api/auth/oidc/login";
-  };
-
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-        <div className="text-center flex flex-col items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-orange-400" />
-          <p className="mt-4 ml-2 text-zinc-600 dark:text-zinc-400">
-            Loading...
-          </p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!config) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg dark:bg-zinc-800">
-          <div className="text-center text-red-600 dark:text-red-400">
-            {error || "Failed to load application configuration"}
-          </div>
-        </div>
-      </div>
+      <BasicError error={error || "Failed to load application configuration"} />
     );
+  }
+
+  if (!startupInfo) {
+    return <BasicError error={error || "Failed to load Database"} />;
   }
 
   return (
@@ -111,166 +78,15 @@ export default function LoginPage() {
             </span>
           </div>
         </div>
-        {/* Login Card */}
-        <div className="overflow-hidden rounded-lg bg-white shadow-xl dark:bg-zinc-800">
-          {/* Demo Banner */}
-          {config.demoStatus && (
-            <div className="bg-orange-400 px-4 py-3 text-center text-sm font-medium text-white">
-              Demo Mode Active
-            </div>
-          )}
 
-          {/* Card Content */}
-          <div className="p-8">
-            {/* Logo/Title */}
-            <div className="mb-8 text-center">
-              <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
-                Welcome
-              </h1>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Sign in to your account
-              </p>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400">
-                {error}
-              </div>
-            )}
-
-            {/* Password Login Form */}
-            {config.allowPasswordLogin && (
-              <form onSubmit={handlePasswordLogin} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="text-sm font-medium text-slate-700 dark:text-zinc-300 block"
-                  >
-                    Email or Username
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:placeholder-zinc-500 dark:focus:border-orange-400"
-                    placeholder="you@example.com"
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center">
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Password
-                    </label>
-                    <div className="text-center text-xs">
-                      <a
-                        href="/reset-password"
-                        className="font-medium text-orange-400 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300"
-                      >
-                        Forgot Password?
-                      </a>
-                    </div>
-                  </div>
-                  <input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:placeholder-zinc-500 dark:focus:border-orange-400"
-                    placeholder="••••••••"
-                    disabled={isSubmitting}
-                  />
-                  {/* Remember Me */}
-                  <div className="flex items-center">
-                    <input
-                      id="rememberMe"
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="h-4 w-4 rounded border-zinc-300 text-orange-400 focus:ring-orange-400 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-offset-zinc-800"
-                      disabled={isSubmitting}
-                    />
-                    <label
-                      htmlFor="rememberMe"
-                      className="ml-2 block text-sm text-zinc-700 dark:text-zinc-300"
-                    >
-                      Remember Me
-                    </label>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full rounded-md bg-orange-400 px-4 py-2 font-medium text-white transition-colors hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-zinc-800"
-                >
-                  {isSubmitting ? "Signing in..." : "Sign in"}
-                </button>
-              </form>
-            )}
-
-            {/* No Login Methods Available */}
-            {!config.allowPasswordLogin && !config.enableOidc && (
-              <div className="text-center text-zinc-600 dark:text-zinc-400">
-                No login methods are currently available. Please contact your
-                administrator.
-              </div>
-            )}
-
-            <div className="flex flex-row justify-between">
-              {/* Sign Up Link */}
-              {config.allowSignup && (
-                <div className="mt-4 text-center text-xs">
-                  <span className="text-zinc-600 dark:text-zinc-400">
-                    Don&apos;t have an account?{" "}
-                  </span>
-                  <a
-                    href="/register"
-                    className="font-medium text-orange-400 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300"
-                  >
-                    Sign up
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* Divider */}
-            {config.enableOidc && config.allowPasswordLogin && (
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-zinc-300 dark:border-zinc-600"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                    OR
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* OIDC Login Button */}
-            {config.enableOidc && (
-              <button
-                onClick={handleOidcLogin}
-                className="mb-4 w-full rounded-md bg-orange-400 px-4 py-3 font-medium text-white transition-colors hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-800"
-              >
-                Login with {config.oidcProviderName || "SSO"}
-              </button>
-            )}
-          </div>
-        </div>
+        <LoginForm config={config} startupInfo={startupInfo} />
 
         {/* Footer */}
-        <div className="mt-8 text-center font-mono text-xs text-zinc-500 dark:text-zinc-500">
-          {config.version && <p>Version {config.version}</p>}
+        <div className="mt-8 flex flex-col gap-6 text-center font-mono text-xs text-zinc-500 dark:text-zinc-500">
+          <ProjectLinks />
+          {config.version && (
+            <p className="font-mono text-xs">Version {config.version}</p>
+          )}
         </div>
       </div>
     </div>
