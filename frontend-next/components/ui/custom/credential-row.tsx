@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Eye, EyeOff } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,7 @@ function CredentialRow({
   ...props
 }: CredentialRowProps) {
   const [copied, setCopied] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -44,27 +45,41 @@ function CredentialRow({
           {label}
         </span>
         <code className="truncate font-mono text-xs/relaxed text-foreground">
-          {isPassword ? (
+          {isPassword && !showPassword ? (
             <span className="tracking-widest">••••••••••</span>
           ) : (
             value
           )}
         </code>
       </div>
-      <button
-        onClick={handleCopy}
-        className={cn(
-          "text-muted-foreground hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/30 shrink-0 rounded-md border border-transparent p-1 transition-colors focus-visible:ring-[2px] outline-none"
+      <div className="flex items-center gap-1">
+        {isPassword && value && (
+          <button
+            onClick={() => setShowPassword(!showPassword)}
+            className={cn(
+              "text-muted-foreground hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/30 shrink-0 rounded-md border border-transparent p-1 transition-colors focus-visible:ring-[2px] outline-none"
+            )}
+            title={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+          </button>
         )}
-        title={copied ? "Copied!" : "Copy to clipboard"}
-        aria-label={`Copy ${label}`}
-      >
-        {copied ? (
-          <Check size={14} className="text-primary" />
-        ) : (
-          <Copy size={14} />
-        )}
-      </button>
+        <button
+          onClick={handleCopy}
+          className={cn(
+            "text-muted-foreground hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/30 shrink-0 rounded-md border border-transparent p-1 transition-colors focus-visible:ring-[2px] outline-none"
+          )}
+          title={copied ? "Copied!" : "Copy to clipboard"}
+          aria-label={`Copy ${label}`}
+        >
+          {copied ? (
+            <Check size={14} className="text-primary" />
+          ) : (
+            <Copy size={14} />
+          )}
+        </button>
+      </div>
     </div>
   );
 }
