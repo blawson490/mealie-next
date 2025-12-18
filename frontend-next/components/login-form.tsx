@@ -130,7 +130,8 @@ export function LoginForm({
                   <FieldLabel htmlFor="email">Email or Username</FieldLabel>
                   <Input
                     id="email"
-                    type="email"
+                    type="text"
+                    autoComplete="username"
                     placeholder="name@company.com"
                     required
                   />
@@ -149,6 +150,7 @@ export function LoginForm({
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
