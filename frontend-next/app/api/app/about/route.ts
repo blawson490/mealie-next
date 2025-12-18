@@ -11,7 +11,7 @@ export async function GET() {
     production: false,
     version: "1.0.0",
     demoStatus: true,
-    allowSignup: true,
+    allowSignup: false,
     allowPasswordLogin: true,
     defaultGroupSlug: "home",
     defaultHouseholdSlug: "home",
