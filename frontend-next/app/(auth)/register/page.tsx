@@ -8,7 +8,7 @@ import BasicError from "@/components/ui/custom/basic-error";
 import { Button } from "@/components/ui/button";
 import { RegistrationForm } from "@/components/ui/auth/registration-form";
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   const [startupInfo, setStartupInfo] = useState<StartupInfo | null>(null);
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(true);
