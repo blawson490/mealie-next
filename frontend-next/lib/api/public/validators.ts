@@ -16,7 +16,7 @@ const routes = {
 };
 
 /**
- * Fetchs the availability of the given type and value.
+ * Fetches the availability of the given type and value.
  * @param type - The type of value to validate (e.g., 'group', 'household', 'user', 'email', 'recipe').
  * @param value - The value to validate.
  * @returns A promise that resolves to a boolean indicating whether the value is available.
