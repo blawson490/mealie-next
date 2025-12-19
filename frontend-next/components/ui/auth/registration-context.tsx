@@ -192,10 +192,20 @@ export function RegistrationProvider({ children }: { children: ReactNode }) {
 
   const goNext = () => {
     if (step === 1) {
+      if (groupMode === "join" && !data.token) return;
+      if (
+        groupMode === "create" &&
+        (!groupNameVal.isValid || groupNameVal.isChecking)
+      )
+        return;
       setStep(2);
     } else if (step === 2) {
+      if (!usernameVal.isValid || usernameVal.isChecking) return;
+      if (!data.fullName?.trim()) return;
       setStep(3);
     } else if (step === 3) {
+      if (!emailVal.isValid || emailVal.isChecking) return;
+      if (!data.password || data.password !== data.confirmPassword) return;
       setStep(4);
     } else if (step === 4) {
       setStep(5);
@@ -203,7 +213,16 @@ export function RegistrationProvider({ children }: { children: ReactNode }) {
       console.log("Final Submission Data:", data);
       // Trigger loading state during account creation (debugging placeholder)
       setCreatingAccount(true);
-      // TODO: Call API
+      try {
+        // TODO: Call API
+        // await createAccount(data);
+        // On success: redirect or show success screen
+      } catch (error) {
+        console.error("Account creation failed:", error);
+        // Show error to user
+      } finally {
+        setCreatingAccount(false);
+      }
     }
   };
 

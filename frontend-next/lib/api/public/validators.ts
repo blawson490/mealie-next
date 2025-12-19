@@ -1,21 +1,28 @@
 const prefix = "/api";
 
 const routes = {
-  group: (name: string) => `${prefix}/validators/group?name=${name}`,
-  user: (name: string) => `${prefix}/validators/user/name?name=${name}`,
-  email: (name: string) => `${prefix}/validators/user/email?email=${name}`,
+  group: (name: string) =>
+    `${prefix}/validators/group?name=${encodeURIComponent(name)}`,
+  household: (name: string) =>
+    `${prefix}/validators/household?name=${encodeURIComponent(name)}`,
+  user: (name: string) =>
+    `${prefix}/validators/user/name?name=${encodeURIComponent(name)}`,
+  email: (name: string) =>
+    `${prefix}/validators/user/email?email=${encodeURIComponent(name)}`,
   recipe: (groupId: string, name: string) =>
-    `${prefix}/validators/group/recipe?group_id=${groupId}?name=${name}`,
+    `${prefix}/validators/recipe?group_id=${encodeURIComponent(
+      groupId
+    )}&name=${encodeURIComponent(name)}`,
 };
 
 /**
  * Fetchs the availability of the given type and value.
- * @param type - The type of value to validate (e.g., 'group', 'user', 'email', 'recipe').
+ * @param type - The type of value to validate (e.g., 'group', 'household', 'user', 'email', 'recipe').
  * @param value - The value to validate.
  * @returns A promise that resolves to a boolean indicating whether the value is available.
  */
 export async function validateAvailability(
-  type: "group" | "user" | "email" | "recipe",
+  type: "group" | "household" | "user" | "email" | "recipe",
   value: string,
   groupId?: string
 ): Promise<boolean> {
@@ -43,13 +50,15 @@ export async function validateAvailability(
  * @returns The constructed validation URL.
  */
 function getValidationUrl(
-  type: "group" | "user" | "email" | "recipe",
+  type: "group" | "household" | "user" | "email" | "recipe",
   value: string,
   groupId?: string
 ): string {
   switch (type) {
     case "group":
       return routes.group(value);
+    case "household":
+      return routes.household(value);
     case "user":
       return routes.user(value);
     case "email":
