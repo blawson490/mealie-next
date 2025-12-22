@@ -11,6 +11,7 @@ import React, {
 import type { UserOut, CredentialsRequest } from "@/lib/types/user/user";
 import { userApi } from "../api/user";
 import { authApi } from "../api/auth";
+import { identify, logError, logWarn, withLog } from "../logger";
 
 const TOKEN_COOKIE = "mealie.access_token";
 
@@ -84,8 +85,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser(userData);
       setStatus("authenticated");
+
+      // Identify the user for logging/analytics
+      try {
+        await identify(userData.id, {
+          email: (userData as any).email,
+          username: (userData as any).username,
+        });
+      } catch (idErr) {
+        // Non-fatal: log identification errors
+        await logWarn("User identify failed", { error: idErr });
+      }
     } catch (error) {
-      console.error("Failed to fetch user session:", error);
+      await logError("Failed to fetch user session", error as Error);
       clearSession();
     }
   }, [clearSession]);
@@ -94,11 +106,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (credentials: CredentialsRequest) => {
       setStatus("loading");
       try {
-        await authApi.fetchToken(credentials);
-        await getSession();
+        await withLog("User SignIn", async () => {
+          await authApi.fetchToken(credentials);
+        });
+        await withLog("Fetch User Session", async () => {
+          await getSession();
+        });
       } catch (error) {
         setStatus("unauthenticated");
-        throw error;
+        await logError("SignIn failed", error as Error);
       }
     },
     [getSession]
@@ -107,12 +123,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(
     async (callbackUrl: string = "") => {
       try {
-        await authApi.logout();
+        await withLog("User SignOut", async () => {
+          await authApi.logout();
+        });
       } catch (error) {
-        console.warn("Logout API call failed:", error);
+        await logWarn("Logout API call failed", { error });
       } finally {
         // Always clear local state/cookies regardless of API success
-        clearSession();
+        await withLog("Clear Session", async () => {
+          clearSession();
+        });
         window.location.href = callbackUrl || "/login";
       }
     },
@@ -127,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Refresh usually rotates the cookie; getSession confirms validity.
       await getSession();
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      await logError("Token refresh failed", error as Error);
       throw error;
     }
   }, [getSession]);
@@ -138,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await authApi.fetchOAuthCallback(searchParams);
       await getSession();
     } catch (error) {
-      console.error("OAuth signin failed:", error);
+      await logError("OAuth signin failed", error as Error);
       throw error;
     }
   }, [getSession]);
