@@ -65,6 +65,64 @@ export const API_ROUTES = {
         )}`,
     },
   },
+  RECIPES: {
+    LIST: "/api/recipes",
+    SUGGESTIONS: "/api/recipes/suggestions",
+    CRUD: (recipe_id: string) =>
+      `/api/recipes/${encodeURIComponent(recipe_id)}`,
+    IMAGE: (recipe_id: string) =>
+      `/api/recipes/${encodeURIComponent(recipe_id)}/image`,
+    IMPORT: "/api/recipes/import",
+    SHARED: {
+      ACCESS: (token: string) =>
+        `/api/recipes/shared/${encodeURIComponent(token)}`,
+    },
+  },
+  ORGANIZERS: {
+    CATEGORIES: {
+      LIST: "/api/organizers/categories",
+      CRUD: (category_id: string) =>
+        `/api/organizers/categories/${encodeURIComponent(category_id)}`,
+    },
+    TAGS: {
+      LIST: "/api/organizers/tags",
+      CRUD: (tag_id: string) =>
+        `/api/organizers/tags/${encodeURIComponent(tag_id)}`,
+    },
+    TOOLS: {
+      LIST: "/api/organizers/tools",
+      CRUD: (tool_id: string) =>
+        `/api/organizers/tools/${encodeURIComponent(tool_id)}`,
+    },
+    FOODS: {
+      LIST: "/api/foods",
+      CRUD: (food_id: string) => `/api/foods/${encodeURIComponent(food_id)}`,
+    },
+  },
+  GROUPS: {
+    MEMBERS: "/api/groups/members",
+    HOUSEHOLDS: "/api/groups/households",
+    SELF: "/api/groups/self",
+    PREFERENCES: "/api/groups/preferences",
+    STORAGE: "/api/groups/storage",
+    ADMIN: {
+      GROUPS: "/api/admin/groups",
+      GROUP: (group_id: string) =>
+        `/api/admin/groups/${encodeURIComponent(group_id)}`,
+    },
+  },
+  HOUSEHOLDS: {
+    CRUD: (household_slug: string) =>
+      `/api/households/${encodeURIComponent(household_slug)}`,
+    COOKBOOKS: {
+      LIST: (household_slug: string) =>
+        `/api/households/${encodeURIComponent(household_slug)}/cookbooks`,
+      CRUD: (household_slug: string, cookbook_id: string) =>
+        `/api/households/${encodeURIComponent(
+          household_slug
+        )}/cookbooks/${encodeURIComponent(cookbook_id)}`,
+    },
+  },
   PUBLIC_ROUTES: {
     APP: {
       ABOUT: "/api/app/about",

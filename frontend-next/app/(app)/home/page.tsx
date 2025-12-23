@@ -9,8 +9,7 @@ import { LogoutButton } from "@/components/ui/logout-button";
 export default function Page() {
   return (
     <div className="p-4 space-y-4">
-      <LogoutButton />
-      <ComponentExample />
+      <h3 className="text-2xl">Home Page</h3>
     </div>
   );
 }

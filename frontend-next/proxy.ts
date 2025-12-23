@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { isTokenExpired, refreshBackendToken } from "@/lib/auth";
 import { API_ROUTES } from "./lib/api/routes";
+import { ROUTES } from "./lib/routes";
 
 // 1. Define Public Pages (Frontend UI)
 // These are likely hardcoded as they don't always align 1:1 with API_ROUTES
-const PUBLIC_PAGES = ["/login", "/register", "/forgot-password"];
+const PUBLIC_PAGES = ["/", "/login", "/register", "/forgot-password"];
 
 /**
  * Middleware that enforces route access and injects authorization for API requests.
@@ -50,7 +51,7 @@ export async function proxy(request: NextRequest) {
 
   // Redirect Authenticated Users away from Public Pages
   if (hasToken && !tokenExpired && PUBLIC_PAGES.includes(pathname)) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL(ROUTES.APP.HOME.ROOT, request.url));
   }
 
   // Protect Private Routes
@@ -61,7 +62,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
       }
       // If it's a Page load, redirect to Login
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
     }
 
     // Expired token handling...
@@ -70,7 +71,9 @@ export async function proxy(request: NextRequest) {
 
       if (!refreshRes) {
         // Refresh failed: Force Logout
-        const response = NextResponse.redirect(new URL("/login", request.url));
+        const response = NextResponse.redirect(
+          new URL(ROUTES.AUTH.LOGIN, request.url)
+        );
         response.cookies.delete("mealie.access_token");
         response.cookies.delete("mealie.refresh_token");
         return response;

@@ -50,11 +50,23 @@ export async function baseRequest<T>(
       if (!headers.has("Content-Type"))
         headers.set("Content-Type", "application/json");
 
+      // Server-side: forward authentication from incoming request
+      if (typeof window === "undefined") {
+        const { cookies } = await import("next/headers");
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("mealie.access_token")?.value;
+
+        if (accessToken && !headers.has("Authorization")) {
+          headers.set("Authorization", `Bearer ${accessToken}`);
+        }
+      }
+
       const response = await fetch(url, {
         ...init,
         headers,
         signal: controller.signal,
         cache: init?.cache ?? "no-store",
+        credentials: typeof window === "undefined" ? undefined : "include",
       });
 
       if (!response.ok) {
