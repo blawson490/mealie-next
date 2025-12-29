@@ -215,6 +215,29 @@ export class MediaAPI extends BaseAPI {
       { responseType: "blob" }
     );
   }
+
+  /**
+   * Get the URL for a user profile image
+   * @param userId The ID of the user
+   * @param cacheKey A random key to prevent caching
+   * @returns The URL for the user profile image
+   */
+  getUserProfileImage(userId: string, cacheKey: string | number = 1) {
+    return API_ROUTES.MEDIA.USERS.PROFILE(userId, cacheKey);
+  }
+
+  /**
+   * Fetch the user profile image as a Blob
+   * @param userId The ID of the user
+   * @param cacheKey A random key to prevent caching
+   * @returns A promise that resolves to the image Blob
+   */
+  async getUserProfileImageBlob(userId: string, cacheKey: string | number = 1) {
+    return await this.requests.get<Blob>(
+      this.getUserProfileImage(userId, cacheKey),
+      { responseType: "blob" }
+    );
+  }
 }
 
 export const mediaApi = new MediaAPI();

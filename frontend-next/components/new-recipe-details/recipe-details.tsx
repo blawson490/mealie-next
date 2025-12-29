@@ -8,6 +8,8 @@ import {
 import RecipeHeader from "./recipe-header";
 import RecipeLastMade from "./recipe-last-made";
 import RecipeNutrition from "./recipe-nutrition";
+import RecipeComments from "./recipe-comments";
+import ChefsNotes from "./recipe-notes";
 
 function formatIngredient(ingredient: RecipeIngredient): string {
   if (ingredient.display) return ingredient.display;
@@ -35,18 +37,6 @@ export default function RecipeDetails(recipe: Recipe) {
   const ingredients = recipe.recipeIngredient ?? [];
   const instructions = recipe.recipeInstructions ?? [];
   const nutrition = recipe.nutrition ?? undefined;
-  const primaryNote = recipe.notes?.[0]?.text ?? "";
-
-  const quickStats = [
-    {
-      label: "Servings",
-      value: recipe.recipeServings ? `${recipe.recipeServings} servings` : "--",
-    },
-    { label: "Prep", value: recipe.prepTime || "--" },
-    { label: "Cook", value: recipe.cookTime || recipe.performTime || "--" },
-    { label: "Total", value: recipe.totalTime || "--" },
-    { label: "Calories", value: nutrition?.calories || "--" },
-  ];
 
   return (
     <div className="relative flex mx-auto w-full flex-col gap-4 px-4 py-8 lg:px-0 mx-auto max-w-[1440px]">
@@ -156,28 +146,16 @@ export default function RecipeDetails(recipe: Recipe) {
               </section>
             </div>
 
-            <section className="rounded-2xl border border-slate-100 bg-white shadow-sm h-[500px]">
-              {/* Mock comments section with 20 comments */}
-              <div className="rounded-2xl border border-slate-100 bg-white shadow-sm h-[500px]">
-                <div className="flex items-center gap-2 border-b border-slate-100 px-5 py-4 text-slate-900 font-semibold">
-                  <IconInfoCircle size={18} />
-                  <span>Chef Notes</span>
-                </div>
-                <div className="px-5 py-6 text-sm text-slate-500">
-                  Comments functionality coming soon. Stay tuned!
-                </div>
-              </div>
-            </section>
+            <RecipeComments comments={recipe.comments || []} />
           </div>
         </div>
 
         <aside className="lg:col-span-3 space-y-4 lg:sticky lg:top-18 self-start">
-          <RecipeLastMade
-            lastMade={recipe.lastMade || undefined}
-            note={primaryNote}
-          />
+          <RecipeLastMade lastMade={recipe.lastMade || undefined} />
 
           <RecipeNutrition nutrition={nutrition} />
+
+          <ChefsNotes notes={recipe.notes || []} />
         </aside>
       </div>
     </div>

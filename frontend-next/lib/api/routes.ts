@@ -127,6 +127,12 @@ export const API_ROUTES = {
           recipeId
         )}/assets/${encodeURIComponent(assetName)}`,
     },
+    USERS: {
+      PROFILE: (userId: string, cacheKey: string | number = 1) =>
+        `/api/media/users/${encodeURIComponent(
+          userId
+        )}/profile.webp?cacheKey=${cacheKey}`,
+    },
   },
   ORGANIZERS: {
     CATEGORIES: {
