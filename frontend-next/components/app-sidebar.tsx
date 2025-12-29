@@ -179,7 +179,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      <SidebarContent>
+      <SidebarContent className="mt-18 md:mt-0">
         {/* Main Navigation */}
         <NavMain items={data.navMain} />
         {/* Cookbooks */}

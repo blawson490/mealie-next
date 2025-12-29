@@ -8,11 +8,15 @@ import {
 } from "@/components/ui/sidebar";
 import { IconToolsKitchen2 } from "@tabler/icons-react";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <SidebarProvider>
       <div className="flex flex-col w-full min-h-screen">
-        <header className="sticky top-0 z-90 bg-sidebar flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
+        <header className="sticky top-0 z-90 bg-sidebar flex h-16 shrink-0 shadow justify-between items-center gap-2 border-b px-4">
           <div className="flex flex-row items-center gap-2 h-16">
             <SidebarTrigger className="-ml-1" />
             <Separator

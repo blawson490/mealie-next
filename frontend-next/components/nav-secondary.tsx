@@ -27,7 +27,7 @@ export function NavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton>
                 <a href={item.url} className="flex flex-row items-center gap-2">
                   <item.icon />
                   <span>{item.title}</span>

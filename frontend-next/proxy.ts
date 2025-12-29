@@ -38,6 +38,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/api/explore") ||
     pathname.startsWith("/api/validators") ||
     pathname.startsWith("/api/recipes/shared") ||
+    pathname.startsWith("/api/media") ||
     pathname.startsWith("/api/users/register");
 
   const isPublic =

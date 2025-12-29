@@ -68,14 +68,64 @@ export const API_ROUTES = {
   RECIPES: {
     LIST: "/api/recipes",
     SUGGESTIONS: "/api/recipes/suggestions",
-    CRUD: (recipe_id: string) =>
-      `/api/recipes/${encodeURIComponent(recipe_id)}`,
+    CRUD: (recipe_slug: string) =>
+      `/api/recipes/${encodeURIComponent(recipe_slug)}`,
     IMAGE: (recipe_id: string) =>
       `/api/recipes/${encodeURIComponent(recipe_id)}/image`,
     IMPORT: "/api/recipes/import",
     SHARED: {
       ACCESS: (token: string) =>
         `/api/recipes/shared/${encodeURIComponent(token)}`,
+    },
+  },
+  MEDIA: {
+    RECIPES: {
+      IMAGE: (
+        recipeId: string,
+        version: string = "",
+        key: string | number = 1
+      ) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/original.webp?rnd=${key}&version=${version}`,
+      SMALL_IMAGE: (
+        recipeId: string,
+        version: string = "",
+        key: string | number = 1
+      ) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/min-original.webp?rnd=${key}&version=${version}`,
+      TINY_IMAGE: (
+        recipeId: string,
+        version: string = "",
+        key: string | number = 1
+      ) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/tiny-original.webp?rnd=${key}&version=${version}`,
+      TIMELINE_EVENT: (recipeId: string, timelineEventId: string) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/timeline/${encodeURIComponent(
+          timelineEventId
+        )}/original.webp`,
+      TIMELINE_EVENT_SMALL: (recipeId: string, timelineEventId: string) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/timeline/${encodeURIComponent(
+          timelineEventId
+        )}/min-original.webp`,
+      TIMELINE_EVENT_TINY: (recipeId: string, timelineEventId: string) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/images/timeline/${encodeURIComponent(
+          timelineEventId
+        )}/tiny-original.webp`,
+      ASSET: (recipeId: string, assetName: string) =>
+        `/api/media/recipes/${encodeURIComponent(
+          recipeId
+        )}/assets/${encodeURIComponent(assetName)}`,
     },
   },
   ORGANIZERS: {

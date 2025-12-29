@@ -15,6 +15,29 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  images: {
+    localPatterns: [
+      {
+        pathname: "/api/media/**",
+        search: "?*",
+      },
+    ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "3000.code.lawsonserver.xyz",
+        port: "",
+        pathname: "/api/media/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
+        pathname: "/api/media/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

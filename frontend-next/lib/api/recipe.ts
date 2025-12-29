@@ -1,4 +1,8 @@
-import { RecipeSuggestionResponse, RecipeSummary } from "../types/recipe";
+import {
+  Recipe,
+  RecipeSuggestionResponse,
+  RecipeSummary,
+} from "../types/recipe";
 import { apiRequest } from "./base/api-request-adapter";
 import { BaseAPI } from "./base/base-api";
 import { API_ROUTES } from "./routes";
@@ -18,16 +22,14 @@ export class RecipeAPI extends BaseAPI {
     );
   }
 
+  async getRecipe(recipeSlug: string) {
+    return await this.requests.get<Recipe>(API_ROUTES.RECIPES.CRUD(recipeSlug));
+  }
+
   async getRecipeSuggestions() {
     return await this.requests.get<RecipeSuggestionResponse>(
       API_ROUTES.RECIPES.SUGGESTIONS
     );
-  }
-
-  getRecipeImageUrl(recipeId: string, imageName: string) {
-    return `/api/media/${encodeURIComponent(
-      recipeId
-    )}/images/${encodeURIComponent(imageName)}`;
   }
 }
 
