@@ -53,8 +53,8 @@ export default function RecipeComments({ comments = [] }: Props) {
   };
 
   return (
-    <section className="max-w-4xl mx-auto p-8 bg-white rounded-3xl shadow-sm border border-slate-100">
-      <div className="flex items-center justify-between pb-4">
+    <section className="w-full mx-auto bg-white rounded-3xl shadow-sm border border-slate-100">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 mb-4">
         <div className="flex items-center gap-3">
           <div className="text-primary">
             <IconMessage size={22} stroke={1.5} />
@@ -71,135 +71,140 @@ export default function RecipeComments({ comments = [] }: Props) {
         </div>
       </div>
 
-      {/* Editor with Markdown Support */}
-      <div className="bg-slate-50 rounded-2xl p-4 mb-10 border border-transparent focus-within:border-slate-200 transition-all">
-        <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Join the conversation..."
-          className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 resize-none h-20 text-[15px]"
-        />
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-3 text-slate-400 select-none">
-            <button onClick={() => applyFormat("**", "**")} title="Bold">
-              <IconBold
-                size={18}
-                className="cursor-pointer hover:text-slate-600"
-              />
-            </button>
-            <button onClick={() => applyFormat("*", "*")} title="Italic">
-              <IconItalic
-                size={18}
-                className="cursor-pointer hover:text-slate-600"
-              />
-            </button>
-            <button
-              onClick={() => applyFormat("<u>", "</u>")}
-              title="Underline"
-            >
-              <IconUnderline
-                size={18}
-                className="cursor-pointer hover:text-slate-600"
-              />
-            </button>
-
-            <div className="w-px h-4 bg-slate-300 mx-1" />
-
-            {/* Header buttons */}
-            <div className="flex items-center gap-2 text-xs font-bold font-mono">
-              <button
-                onClick={() => applyFormat("# ")}
-                className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
-              >
-                H1
-              </button>
-              <button
-                onClick={() => applyFormat("## ")}
-                className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
-              >
-                H2
-              </button>
-              <button
-                onClick={() => applyFormat("### ")}
-                className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
-              >
-                H3
-              </button>
-            </div>
-
-            <div className="w-px h-4 bg-slate-300 mx-1" />
-            <IconPhoto
-              size={18}
-              className="cursor-pointer hover:text-slate-600"
-            />
-          </div>
-          <button className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm transition-all shadow-lg shadow-slate-200">
-            Post Comment
-          </button>
-        </div>
-      </div>
-
-      {/* Comments List */}
-      <div className="space-y-8">
-        {comments.map((comment) => (
-          <div key={comment.id} className="flex gap-4 group">
-            <div className="relative flex-shrink-0">
-              <div className="h-11 w-11 rounded-full bg-slate-100 overflow-hidden ring-1 ring-slate-100">
-                <img
-                  src={mediaApi.getUserProfileImage(comment.userId)}
-                  alt={`${comment.user.fullName} profile image`}
-                  className="h-full w-full object-cover"
+      <div className="px-5 space-y-8">
+        {/* Editor with Markdown Support */}
+        <div className="bg-slate-50 rounded-2xl p-4 mb-10 border border-transparent focus-within:border-slate-200 transition-all">
+          <textarea
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Join the conversation..."
+            className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder-slate-400 resize-none h-20 text-[15px]"
+          />
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-3 text-slate-400 select-none">
+              <button onClick={() => applyFormat("**", "**")} title="Bold">
+                <IconBold
+                  size={18}
+                  className="cursor-pointer hover:text-slate-600"
                 />
+              </button>
+              <button onClick={() => applyFormat("*", "*")} title="Italic">
+                <IconItalic
+                  size={18}
+                  className="cursor-pointer hover:text-slate-600"
+                />
+              </button>
+              <button
+                onClick={() => applyFormat("<u>", "</u>")}
+                title="Underline"
+              >
+                <IconUnderline
+                  size={18}
+                  className="cursor-pointer hover:text-slate-600"
+                />
+              </button>
+
+              <div className="w-px h-4 bg-slate-300 mx-1" />
+
+              {/* Header buttons */}
+              <div className="flex items-center gap-2 text-xs font-bold font-mono">
+                <button
+                  onClick={() => applyFormat("# ")}
+                  className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
+                >
+                  H1
+                </button>
+                <button
+                  onClick={() => applyFormat("## ")}
+                  className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
+                >
+                  H2
+                </button>
+                <button
+                  onClick={() => applyFormat("### ")}
+                  className="hover:text-slate-600 hover:bg-slate-200 px-1 rounded"
+                >
+                  H3
+                </button>
               </div>
-              {comment.user.admin && (
-                <div className="absolute bottom-0 -right-1 bg-white rounded-full p-[2px] shadow-sm z-10">
-                  <IconRosetteDiscountCheckFilled
-                    size={16}
-                    className="text-blue-500"
+
+              <div className="w-px h-4 bg-slate-300 mx-1" />
+              <IconPhoto
+                size={18}
+                className="cursor-pointer hover:text-slate-600"
+              />
+            </div>
+            <button
+              disabled={false}
+              className="bg-primary hover:bg-primary/80 text-white px-6 py-2 rounded-full font-bold text-sm transition-all shadow-lg shadow-slate-200"
+            >
+              Post Comment
+            </button>
+          </div>
+        </div>
+
+        {/* Comments List */}
+        <div className="space-y-8">
+          {comments.map((comment) => (
+            <div key={comment.id} className="flex gap-4 group">
+              <div className="relative flex-shrink-0">
+                <div className="h-11 w-11 rounded-full bg-slate-100 overflow-hidden ring-1 ring-slate-100">
+                  <img
+                    src={mediaApi.getUserProfileImage(comment.userId)}
+                    alt={`${comment.user.fullName} profile image`}
+                    className="h-full w-full object-cover"
                   />
                 </div>
-              )}
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-[15px] text-slate-900">
-                    {comment.user.fullName}
-                  </span>
-                  <span className="text-[13px] text-slate-400 font-medium">
-                    • {formatTimeAgo(comment.createdAt)}
-                  </span>
-                </div>
-
-                {(auth.user?.id === comment.userId || auth.user?.admin) && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="text-slate-300 hover:text-slate-500 p-1 rounded outline-none">
-                      <IconDotsVertical size={18} />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      {/* 2. Owner-only: Edit Option */}
-                      {auth.user?.id === comment.userId && (
-                        <DropdownMenuItem>
-                          <IconEdit className="mr-2 h-4 w-4" />
-                          <span>Edit</span>
-                        </DropdownMenuItem>
-                      )}
-
-                      {/* 3. Owner OR Admin: Delete Option */}
-                      <DropdownMenuItem className="text-red-600 focus:text-red-600">
-                        <IconTrash className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                {comment.user.admin && (
+                  <div className="absolute bottom-0 -right-1 bg-white rounded-full p-[2px] shadow-sm z-10">
+                    <IconRosetteDiscountCheckFilled
+                      size={16}
+                      className="text-blue-500"
+                    />
+                  </div>
                 )}
               </div>
-              <MealieMarkdown content={comment.text} />
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[15px] text-slate-900">
+                      {comment.user.fullName}
+                    </span>
+                    <span className="text-[13px] text-slate-400 font-medium">
+                      • {formatTimeAgo(comment.createdAt)}
+                    </span>
+                  </div>
+
+                  {(auth.user?.id === comment.userId || auth.user?.admin) && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="text-slate-300 hover:text-slate-500 p-1 rounded outline-none">
+                        <IconDotsVertical size={18} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        {/* 2. Owner-only: Edit Option */}
+                        {auth.user?.id === comment.userId && (
+                          <DropdownMenuItem>
+                            <IconEdit className="mr-2 h-4 w-4" />
+                            <span>Edit</span>
+                          </DropdownMenuItem>
+                        )}
+
+                        {/* 3. Owner OR Admin: Delete Option */}
+                        <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                          <IconTrash className="mr-2 h-4 w-4" />
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
+                <MealieMarkdown content={comment.text} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

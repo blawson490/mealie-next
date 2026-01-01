@@ -48,21 +48,22 @@ export const API_ROUTES = {
         `/api/users/api-tokens/${encodeURIComponent(token_id)}`,
     },
     RATINGS: {
-      GET: (id: string) => `/api/users/${encodeURIComponent(id)}/ratings/`,
-      FAVORITES: (id: string) =>
-        `/api/users/${encodeURIComponent(id)}/favorites`,
-      SET_RATING: (id: string, slug: string) =>
-        `/api/users/${encodeURIComponent(id)}/ratings/${encodeURIComponent(
+      GET: (user_id: string) =>
+        `/api/users/${encodeURIComponent(user_id)}/ratings/`,
+      FAVORITES: (user_id: string) =>
+        `/api/users/${encodeURIComponent(user_id)}/favorites`,
+      SET_RATING: (user_id: string, slug: string) =>
+        `/api/users/${encodeURIComponent(user_id)}/ratings/${encodeURIComponent(
           slug
         )}`,
-      ADD_FAVORITE: (id: string, slug: string) =>
-        `/api/users/${encodeURIComponent(id)}/favorites/${encodeURIComponent(
-          slug
-        )}`,
-      DELETE_FAVORITE: (id: string, slug: string) =>
-        `/api/users/${encodeURIComponent(id)}/favorites/${encodeURIComponent(
-          slug
-        )}`,
+      ADD_FAVORITE: (user_id: string, slug: string) =>
+        `/api/users/${encodeURIComponent(
+          user_id
+        )}/favorites/${encodeURIComponent(slug)}`,
+      DELETE_FAVORITE: (user_id: string, slug: string) =>
+        `/api/users/${encodeURIComponent(
+          user_id
+        )}/favorites/${encodeURIComponent(slug)}`,
     },
   },
   RECIPES: {
@@ -127,12 +128,33 @@ export const API_ROUTES = {
           recipeId
         )}/assets/${encodeURIComponent(assetName)}`,
     },
+
     USERS: {
       PROFILE: (userId: string, cacheKey: string | number = 1) =>
         `/api/media/users/${encodeURIComponent(
           userId
         )}/profile.webp?cacheKey=${cacheKey}`,
     },
+  },
+  SHARED: {
+    GET_SHARED_RECIPE: (tokenId: string) =>
+      `/api/recipes/shared/${encodeURIComponent(tokenId)}`,
+    // TODO Update route for query params
+    GET_SHARES_FOR_RECIPE: (recipe_id: string) =>
+      `/api/shared/recipes?page=1&perPage=-1&recipe_id=${encodeURIComponent(
+        recipe_id
+      )}`,
+    CREATE_SHARE_FOR_RECIPE: `/api/shared/recipes`,
+    DELETE_SHARE: (share_id: string) =>
+      `/api/shared/recipes/${encodeURIComponent(share_id)}`,
+  },
+  EXPORTS: {
+    ZIP_TOKEN: (recipe_slug: string) =>
+      `/api/recipes/${encodeURIComponent(recipe_slug)}/exports`,
+    ZIP: (recipe_slug: string, token: string) =>
+      `/api/recipes/${encodeURIComponent(
+        recipe_slug
+      )}/exports/zip?token=${encodeURIComponent(token)}`,
   },
   ORGANIZERS: {
     CATEGORIES: {

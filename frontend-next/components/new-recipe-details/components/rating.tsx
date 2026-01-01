@@ -1,72 +1,73 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
 
 type RatingProps = {
   rating?: number | null;
-  size?: number; // px
+  size?: number;
   className?: string;
+  onRate?: (rating: number) => void;
+  readonly?: boolean;
 };
 
-export function Rating({ rating, size = 16, className }: RatingProps) {
+export default function Rating({
+  rating,
+  size = 16,
+  className,
+  onRate,
+  readonly = false,
+}: RatingProps) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
-  const ratedCount = Math.max(0, Math.min(5, Math.floor(rating ?? 0)));
+  const currentRating = rating ?? 0;
   const stars = Array.from({ length: 5 });
 
   return (
     <div
-      className={`flex items-center gap-1 ${className ?? ""}`}
-      onMouseLeave={() => setHoverIndex(null)}
+      className={cn("flex items-center gap-1", className)}
+      onMouseLeave={() => !readonly && setHoverIndex(null)}
       aria-label={
-        rating == null ? "Not yet rated" : `Rated ${ratedCount} out of 5`
+        rating == null ? "Not yet rated" : `Rated ${currentRating} out of 5`
       }
     >
       {stars.map((_, i) => {
+        const starValue = i + 1;
         const isHoveredPreview = hoverIndex !== null && i <= hoverIndex;
-        const isRatedOriginal = ratedCount > i;
+        const isRatedOriginal = currentRating >= starValue;
+
         const showFilled =
           hoverIndex !== null ? isHoveredPreview : isRatedOriginal;
-        const scaleClass = hoverIndex === i ? "scale-120" : "scale-100";
 
-        // Color logic:
-        // - Filled: primary
-        // - Unfilled while hovering: darker outline for originally rated, lighter for others
-        // - Unfilled without hover: lighter outline
+        const scaleClass =
+          !readonly && hoverIndex === i ? "scale-125" : "scale-100";
+        const cursorClass = readonly ? "cursor-default" : "cursor-pointer";
+
         let colorClass: string;
         if (showFilled) {
-          colorClass = "text-primary";
-        } else if (hoverIndex !== null) {
-          colorClass = isRatedOriginal ? "text-primary/70" : "text-primary/30";
+          colorClass = "text-yellow-500"; // Changed to yellow/primary for visibility
         } else {
-          colorClass = "text-primary/30";
+          colorClass = "text-gray-300";
         }
 
         return (
-          <span
+          <button
             key={i}
-            className={`inline-flex transition-transform duration-150 ${scaleClass}`}
-            onMouseEnter={() => setHoverIndex(i)}
-            role="img"
-            aria-label={`Star ${i + 1}`}
+            type="button"
+            disabled={readonly}
+            className={`inline-flex transition-transform duration-150 ${scaleClass} ${cursorClass}`}
+            onMouseEnter={() => !readonly && setHoverIndex(i)}
+            onClick={() => !readonly && onRate?.(starValue)}
           >
             {showFilled ? (
-              <IconStarFilled
-                style={{ width: size, height: size }}
-                className={colorClass}
-              />
+              <IconStarFilled size={size} className={colorClass} />
             ) : (
-              <IconStar
-                style={{ width: size, height: size }}
-                className={colorClass}
-              />
+              <IconStar size={size} className={colorClass} />
             )}
-          </span>
+          </button>
         );
       })}
     </div>
   );
 }
-
-export default Rating;

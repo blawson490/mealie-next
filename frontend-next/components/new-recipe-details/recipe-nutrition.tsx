@@ -132,12 +132,12 @@ export default function RecipeNutrition({
   return (
     <div className="w-full max-w-md bg-white rounded-xl shadow overflow-hidden font-sans">
       {/* Header Section */}
-      <div className="p-6 pb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <IconActivity className="w-5 h-5 text-primary" />
-            Nutrition Facts
-          </h3>
+      <div className="">
+        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+          <div className="flex items-center gap-2 text-slate-900 font-bold">
+            <IconActivity className="text-primary" size={20} />
+            <span>Nutrition Facts</span>
+          </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-xs font-medium bg-muted p-1 rounded-full text-primary shadow-sm hover:cursor-pointer"
