@@ -1,5 +1,5 @@
 import RecipeDetails from "@/components/new-recipe-details/recipe-details";
-import { recipeApi } from "@/lib/api/recipe";
+import { getOneApiRecipesSlugGet } from "@/lib/api/generated/recipe-crud/recipe-crud";
 
 export default async function RecipePage({
   params,
@@ -7,7 +7,7 @@ export default async function RecipePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const recipe = await recipeApi.getRecipe(slug);
+  const recipe = await getOneApiRecipesSlugGet(slug);
   return (
     <div className="bg-muted md:px-4 print:p-0">
       {recipe && <RecipeDetails {...recipe} />}

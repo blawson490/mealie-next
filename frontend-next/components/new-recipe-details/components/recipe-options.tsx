@@ -10,13 +10,10 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { API_ROUTES } from "@/lib/api/routes";
 import {
-  IconCalendarPlus,
   IconCopyPlus,
   IconDotsVertical,
   IconDownload,
@@ -24,9 +21,6 @@ import {
   IconHeart,
   IconHeartFilled,
   IconPrinter,
-  IconShare2,
-  IconShare3,
-  IconShoppingBagPlus,
   IconTimelineEventText,
   IconTrash,
 } from "@tabler/icons-react";
@@ -55,7 +49,7 @@ export default function RecipeOptions({
   // Handle Favorite
   const handleFavoriteClick = async () => {
     const previousState = isFavorited;
-    setIsFavorited(!isFavorited); // Optimistic
+    setIsFavorited(!isFavorited);
 
     startTransition(async () => {
       const result = await toggleFavoriteAction(
@@ -114,9 +108,6 @@ export default function RecipeOptions({
           <IconHeart className="" />
         )}
       </Button>
-      {/* <Button variant="outline" size={"icon-lg"} className={"rounded-full"}>
-        <IconShare2 className="" />
-      </Button> */}
       <RecipeShareDialog
         recipeId={recipeId}
         recipeName={recipeName}

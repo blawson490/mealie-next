@@ -20,12 +20,11 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
-  IngredientFood,
-  RecipeCategoryResponse,
-  RecipeIngredient,
-  RecipeTagResponse,
-  RecipeToolResponse,
-} from "@/lib/types/recipe";
+  RecipeCategory,
+  RecipeTag,
+  RecipeTool,
+  IngredientFoodOutput,
+} from "@/lib/api/generated/model";
 
 interface RecipeSearchProps {
   onActiveChange: (isActive: boolean) => void;
@@ -35,10 +34,10 @@ interface RecipeSearchProps {
   clearAll: () => void;
   query: string;
   setQuery: (query: string) => void;
-  categories: RecipeCategoryResponse[];
-  tags: RecipeTagResponse[];
-  tools: RecipeToolResponse[];
-  foods: IngredientFood[];
+  categories: RecipeCategory[];
+  tags: RecipeTag[];
+  tools: RecipeTool[];
+  foods: IngredientFoodOutput[];
 }
 
 export default function RecipeSearch({

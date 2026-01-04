@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { AppConfig, StartupInfo } from "@/lib/types/app";
 import Loader from "@/components/ui/custom/loader";
 import BasicError from "@/components/ui/custom/basic-error";
 import { Button } from "@/components/ui/button";
 import { RegistrationForm } from "@/components/ui/auth/registration-form";
-import { configApi } from "@/lib/api/public/config";
+import { AppInfo, AppStartupInfo } from "@/lib/api/generated/model";
+import {
+  getAppInfoApiAppAboutGet,
+  getStartupInfoApiAppAboutStartupInfoGet,
+} from "@/lib/api/generated/app-about/app-about";
 
 /**
  * Display the registration page and manage initial configuration loading, error states, and OIDC redirect.
@@ -19,8 +22,8 @@ import { configApi } from "@/lib/api/public/config";
  * @returns A React element for the registration page.
  */
 export default function RegistrationPage() {
-  const [startupInfo, setStartupInfo] = useState<StartupInfo | null>(null);
-  const [config, setConfig] = useState<AppConfig | null>(null);
+  const [startupInfo, setStartupInfo] = useState<AppStartupInfo | null>(null);
+  const [config, setConfig] = useState<AppInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,9 +39,9 @@ export default function RegistrationPage() {
      */
     async function loadConfig() {
       try {
-        const startupInfo = await configApi.getStartupInfo();
+        const startupInfo = await getStartupInfoApiAppAboutStartupInfoGet();
         setStartupInfo(startupInfo);
-        const appConfig = await configApi.getAppConfig();
+        const appConfig = await getAppInfoApiAppAboutGet();
         setConfig(appConfig);
 
         // Auto-redirect to OIDC if enabled and redirect is true

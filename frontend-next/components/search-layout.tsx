@@ -3,19 +3,18 @@
 import { useState } from "react";
 import RecipeSearch from "./search";
 import {
-  IngredientFood,
-  RecipeCategoryResponse,
-  RecipeIngredient,
-  RecipeTagResponse,
-  RecipeToolResponse,
-} from "@/lib/types/recipe";
+  IngredientFoodOutput,
+  RecipeCategory,
+  RecipeTag,
+  RecipeTool,
+} from "@/lib/api/generated/model";
 
 interface SearchLayoutProps {
   children: React.ReactNode;
-  categories: RecipeCategoryResponse[];
-  tags: RecipeTagResponse[];
-  tools: RecipeToolResponse[];
-  foods: IngredientFood[];
+  categories: RecipeCategory[];
+  tags: RecipeTag[];
+  tools: RecipeTool[];
+  foods: IngredientFoodOutput[];
 }
 
 export default function SearchLayout({

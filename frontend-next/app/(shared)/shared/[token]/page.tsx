@@ -1,5 +1,5 @@
+import { getSharedRecipeApiRecipesSharedTokenIdGet } from "@/lib/api/generated/recipe-shared/recipe-shared";
 import { redirect } from "next/navigation";
-import { recipeApi } from "@/lib/api/recipe";
 
 // Get shared recipe is a publically accessible page that uses the token to fetch the recipe
 // TODO: Update this to show the recipe details in a read-only view instead of redirecting
@@ -11,7 +11,7 @@ export default async function SharedRecipePage({
   const { token } = await params;
   try {
     // Fetch the shared recipe using the token
-    const recipe = await recipeApi.getSharedRecipe(token);
+    const recipe = await getSharedRecipeApiRecipesSharedTokenIdGet(token);
 
     // Redirect to the recipe detail page
     redirect(`/home/recipes/${recipe.slug}`);

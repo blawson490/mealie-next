@@ -9,11 +9,30 @@ import {
 } from "@/app/actions/recipe-actions";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { IconChevronDown } from "@tabler/icons-react";
+import {
+  IconCalendarPlus,
+  IconChevronDown,
+  IconCopyPlus,
+  IconDownload,
+  IconEdit,
+  IconPrinter,
+  IconShoppingBagPlus,
+  IconTrash,
+} from "@tabler/icons-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import AddToMealPlanDialog from "./add-to-mealplan-dialog";
+import { ApiErrorSheet } from "@/components/api-error/api-error-sheet";
 
 interface RecipeInteractionsProps {
   userId: string;
   recipeId: string;
+  recipeName: string;
   recipeSlug: string;
   initialIsFavorited: boolean;
   initialRating: number;
@@ -22,6 +41,7 @@ interface RecipeInteractionsProps {
 export default function RecipeInteractions({
   userId,
   recipeId,
+  recipeName,
   recipeSlug,
   initialIsFavorited,
   initialRating,
@@ -30,51 +50,30 @@ export default function RecipeInteractions({
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
   const [rating, setRating] = useState(initialRating);
   const [isPending, startTransition] = useTransition();
-
-  // Handle Favorite
-  const handleFavoriteClick = async () => {
-    const previousState = isFavorited;
-    setIsFavorited(!isFavorited); // Optimistic
-
-    startTransition(async () => {
-      const result = await toggleFavoriteAction(
-        userId,
-        recipeId,
-        recipeSlug,
-        previousState
-      );
-      if (!result.success) {
-        setIsFavorited(previousState); // Revert
-        toast.error("Failed to update favorites");
-      }
-    });
-  };
+  const [isMealPlanDialogOpen, setIsMealPlanDialogOpen] = useState(false);
+  const [isShoppingListDialogOpen, setIsShoppingListDialogOpen] =
+    useState(false);
+  const [errorDetails, setErrorDetails] = useState<any>(null);
 
   // Handle Rate
   const handleRate = async (newRating: number) => {
     const previousRating = rating;
-    setRating(newRating); // Optimistic
-    toast.success(`You rated this ${newRating} stars!`);
+    setRating(newRating);
 
     startTransition(async () => {
-      const result = await rateRecipeAction(
-        userId,
-        recipeSlug,
-        newRating,
-        isFavorited
-      );
+      const result = await rateRecipeAction(userId, recipeSlug, {
+        rating: newRating ?? null,
+        isFavorite: isFavorited,
+      });
       if (!result.success) {
         setRating(previousRating);
-        toast.error("Failed to save rating");
+        toast.error("Failed to save rating", {
+          action: {
+            label: "See More",
+            onClick: () => setErrorDetails(result.error),
+          },
+        });
       }
-    });
-  };
-
-  const handleAddToMealPlan = () => {
-    toast.promise(addToMealPlanAction(recipeId), {
-      loading: "Adding...",
-      success: "Added to meal plan!",
-      error: "Error adding to meal plan",
     });
   };
 
@@ -90,13 +89,44 @@ export default function RecipeInteractions({
 
       {/* 2. Action Buttons */}
       <div className="flex flex-row gap-2 flex-wrap">
-        <Button onClick={handleAddToMealPlan} size={"lg"}>
-          Start Cooking
-        </Button>
-        <Button variant="outline" size={"lg"}>
-          Add to...
-          <IconChevronDown className="ml-1" />
-        </Button>
+        <Button size={"lg"}>Start Cooking</Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="outline" size={"lg"}>
+                Add to...
+                <IconChevronDown className="ml-1" />
+              </Button>
+            }
+          />
+          <DropdownMenuContent className={"w-40 whitespace-nowrap"}>
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsMealPlanDialogOpen(true);
+                }}
+              >
+                <IconCalendarPlus /> Add to Meal Plan
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <IconShoppingBagPlus /> Add to Shopping List
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <AddToMealPlanDialog
+          recipeId={recipeId}
+          recipeName={recipeName}
+          isOpen={isMealPlanDialogOpen}
+          onOpenChange={setIsMealPlanDialogOpen}
+        />
+
+        <ApiErrorSheet
+          open={!!errorDetails}
+          onOpenChange={(open) => !open && setErrorDetails(null)}
+          error={errorDetails}
+        />
       </div>
     </div>
   );

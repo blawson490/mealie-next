@@ -12,8 +12,9 @@ import RecipeComments from "./recipe-comments";
 import ChefsNotes from "./recipe-notes";
 import RecipeInstructions from "./recipe-instructions";
 import RecipeIngredients from "./recipe-ingredients";
+import { RecipeOutput } from "@/lib/api/generated/model";
 
-export default function RecipeDetails(recipe: Recipe) {
+export default function RecipeDetails(recipe: RecipeOutput) {
   const ingredients = recipe.recipeIngredient ?? [];
   const instructions = recipe.recipeInstructions ?? [];
   const nutrition = recipe.nutrition ?? undefined;
@@ -27,7 +28,7 @@ export default function RecipeDetails(recipe: Recipe) {
             id={recipe.id || ""}
             slug={recipe.slug || ""}
             image_version={"1"}
-            image_key={recipe.image || ""}
+            image_key={recipe.image || ("" as string)} //TODO: fix
             orgURL={recipe.orgURL || ""}
             rating={recipe.rating || 0}
             categories={recipe.recipeCategory || undefined}

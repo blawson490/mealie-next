@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { AppConfig, StartupInfo } from "@/lib/types/app";
 import { LoginForm } from "@/components/ui/auth/login-form";
 import { ProjectLinks } from "@/components/ui/custom/auth/project-links";
 import Loader from "@/components/ui/custom/loader";
 import BasicError from "@/components/ui/custom/basic-error";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useRouter } from "next/navigation";
-import { configApi } from "@/lib/api/public/config";
+import {
+  getAppInfoApiAppAboutGet,
+  getStartupInfoApiAppAboutStartupInfoGet,
+} from "@/lib/api/generated/app-about/app-about";
+import { getAppStatisticsApiAdminAboutStatisticsGet } from "@/lib/api/generated/admin-about/admin-about";
+import { AppInfo, AppStartupInfo } from "@/lib/api/generated/model";
 
 /**
  * Renders the login page: loads startup info and app configuration, displays a loader while fetching, shows errors when loading fails, and renders the login form and footer when successful.
@@ -19,8 +23,8 @@ import { configApi } from "@/lib/api/public/config";
  */
 export default function LoginPage() {
   const router = useRouter();
-  const [startupInfo, setStartupInfo] = useState<StartupInfo | null>(null);
-  const [config, setConfig] = useState<AppConfig | null>(null);
+  const [startupInfo, setStartupInfo] = useState<AppStartupInfo | null>(null);
+  const [config, setConfig] = useState<AppInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { loggedIn } = useAuth();
@@ -38,9 +42,9 @@ export default function LoginPage() {
      */
     async function loadConfig() {
       try {
-        const startupInfo = await configApi.getStartupInfo();
+        const startupInfo = await getStartupInfoApiAppAboutStartupInfoGet();
         setStartupInfo(startupInfo);
-        const appConfig = await configApi.getAppConfig();
+        const appConfig = await getAppInfoApiAppAboutGet();
         setConfig(appConfig);
 
         // Auto-redirect to OIDC if enabled and redirect is true

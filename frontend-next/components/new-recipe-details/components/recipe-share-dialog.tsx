@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RecipeShareTokenSummary } from "@/lib/types/recipe";
 import {
   IconCalendar,
   IconCheck,
@@ -35,6 +34,7 @@ import {
   updateRecipePrivacyAction,
 } from "@/app/actions/recipe-actions";
 import { toast } from "sonner";
+import { RecipeShareTokenSummary } from "@/lib/api/generated/model/recipeShareTokenSummary";
 
 export default function RecipeShareDialog({
   recipeId,
@@ -114,8 +114,7 @@ export default function RecipeShareDialog({
     setLoading(true);
     const createSharedLink = async () => {
       try {
-        const response = await createSharedRecipeLinkAction(
-          recipeId,
+        const expiresAt =
           selectedExpiry === "Custom" && customDate
             ? new Date(customDate).getTime()
             : selectedExpiry === "1 Day"
@@ -126,8 +125,12 @@ export default function RecipeShareDialog({
             ? Date.now() + 30 * 24 * 60 * 60 * 1000
             : selectedExpiry === "1 Year"
             ? Date.now() + 365 * 24 * 60 * 60 * 1000
-            : undefined
-        );
+            : undefined;
+
+        const response = await createSharedRecipeLinkAction({
+          recipeId,
+          expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+        });
         if (response.success && response.sharedRecipes) {
           setTokens(response.sharedRecipes);
           toast.success("Guest link created successfully!");

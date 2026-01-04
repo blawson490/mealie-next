@@ -24,6 +24,9 @@ dev/data/templates/*
 dev/data/users/*
 dev/data/groups/*
 
+# generated files from backend
+frontend-next/lib/api/generated/*
+
 .DS_Store
 node_modules
 

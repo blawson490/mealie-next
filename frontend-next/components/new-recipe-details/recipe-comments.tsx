@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { mediaApi } from "@/lib/api/media";
 import { useAuth } from "@/lib/auth/auth-context";
 import { RecipeCommentOut } from "@/lib/types/recipe";
 import {
@@ -22,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import MealieMarkdown from "./mealie-markdown";
+import { getUserProfileImageUrl } from "@/lib/api/media";
 
 interface Props {
   comments?: RecipeCommentOut[];
@@ -151,7 +151,7 @@ export default function RecipeComments({ comments = [] }: Props) {
               <div className="relative flex-shrink-0">
                 <div className="h-11 w-11 rounded-full bg-slate-100 overflow-hidden ring-1 ring-slate-100">
                   <img
-                    src={mediaApi.getUserProfileImage(comment.userId)}
+                    src={getUserProfileImageUrl(comment.userId)}
                     alt={`${comment.user.fullName} profile image`}
                     className="h-full w-full object-cover"
                   />

@@ -1,25 +1,28 @@
 import RecipeCard from "@/components/recipe-card";
 import SearchLayout from "@/components/search-layout";
-import { recipeApi } from "@/lib/api/recipe";
-import { organizersApi } from "@/lib/api/organizers";
+import { getAllApiOrganizersCategoriesGet } from "@/lib/api/generated/organizer-categories/organizer-categories";
+import { getAllApiOrganizersTagsGet } from "@/lib/api/generated/organizer-tags/organizer-tags";
+import { getAllApiOrganizersToolsGet } from "@/lib/api/generated/organizer-tools/organizer-tools";
+import { getAllApiRecipesGet } from "@/lib/api/generated/recipe-crud/recipe-crud";
+import { getAllApiFoodsGet } from "@/lib/api/generated/recipes-foods/recipes-foods";
 import { RecipeSummary } from "@/lib/types/recipe";
 
 export default async function Page() {
-  const recipesResponse = await recipeApi.getRecipes();
+  const recipesResponse = await getAllApiRecipesGet();
   const recipes = recipesResponse.items as RecipeSummary[];
 
-  const categories = await organizersApi.getCategories();
-  const tags = await organizersApi.getTags();
-  const tools = await organizersApi.getTools();
-  const foods = await organizersApi.getFoods();
+  const categories = await getAllApiOrganizersCategoriesGet();
+  const tags = await getAllApiOrganizersTagsGet();
+  const tools = await getAllApiOrganizersToolsGet();
+  const foods = await getAllApiFoodsGet();
 
   return (
     <div className="p-4 space-y-4 max-w-7xl mx-auto">
       <SearchLayout
-        categories={categories}
-        tags={tags}
-        tools={tools}
-        foods={foods}
+        categories={categories.items}
+        tags={tags.items}
+        tools={tools.items}
+        foods={foods.items}
       >
         {/* <div className="pb-6 border-b border-b-1">
           <RecipeSearch />

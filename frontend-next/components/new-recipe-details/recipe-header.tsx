@@ -1,12 +1,13 @@
-import { mediaApi } from "@/lib/api/media";
 import { RecipeCategory } from "@/lib/types/recipe";
 import Image from "next/image";
 import { Favicon } from "./components/favicon";
 import Rating from "./components/rating";
 import Link from "next/link";
-import { userApi } from "@/lib/api/user";
 import RecipeInteractions from "./components/recipe-interactions";
 import RecipeOptions from "./components/recipe-options";
+import { getLoggedInUserApiUsersSelfGet } from "@/lib/api/generated/users-crud/users-crud";
+import { getRatingsApiUsersIdRatingsGet } from "@/lib/api/generated/users-ratings/users-ratings";
+import { getRecipeImageUrl } from "@/lib/api/media";
 
 interface RecipeHeaderProps {
   name: string;
@@ -41,8 +42,8 @@ export default async function RecipeHeader({
   prepTime,
   initialIsPublic,
 }: RecipeHeaderProps) {
-  const self = await userApi.fetchSelf();
-  const selfRatingsResponse = await userApi.fetchSelfRatings();
+  const self = await getLoggedInUserApiUsersSelfGet();
+  const selfRatingsResponse = await getRatingsApiUsersIdRatingsGet(self.id);
 
   const isFavorited =
     selfRatingsResponse.ratings.find((rating) => rating.recipeId === id)
@@ -53,7 +54,7 @@ export default async function RecipeHeader({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         <div className="relative bg-gray-200 overflow-hidden order-2 md:order-1">
           <Image
-            src={mediaApi.getRecipeImage(id, image_version, image_key)}
+            src={getRecipeImageUrl(id, image_version, image_key)}
             alt={name}
             fill
             className="object-cover"
@@ -111,6 +112,7 @@ export default async function RecipeHeader({
 
             <RecipeInteractions
               recipeId={id}
+              recipeName={name}
               recipeSlug={slug}
               userId={self.id}
               initialIsFavorited={isFavorited}

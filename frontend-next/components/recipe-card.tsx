@@ -1,6 +1,6 @@
 "use client";
 import { RecipeSummary } from "@/lib/types/recipe";
-import { mediaApi } from "@/lib/api/media";
+import { getRecipeImageUrl } from "@/lib/api/media";
 import {
   IconClock,
   IconDotsVertical,
@@ -42,7 +42,7 @@ export default function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
           </div>
 
           <img
-            src={mediaApi.getRecipeImage(recipe.id || "", recipe.image, "1")}
+            src={getRecipeImageUrl(recipe.id || "", recipe.image, "1")}
             alt={recipe.name || "Unknown Recipe"}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />

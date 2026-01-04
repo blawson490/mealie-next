@@ -1,32 +1,40 @@
 export type RequestResponse<T> = T;
 
-export interface ApiRequestConfig extends RequestInit {
+export interface ApiRequestConfig<P = unknown> extends RequestInit {
   timeoutMs?: number;
   retries?: number;
   next?: NextFetchRequestConfig;
   responseType?: "json" | "text" | "blob";
+  params?: P;
 }
 
 export interface ApiRequestInstance {
-  get<T>(url: string, config?: ApiRequestConfig): Promise<RequestResponse<T>>;
-  post<T>(
+  get<T, P = unknown>(
+    url: string,
+    config?: ApiRequestConfig<P>
+  ): Promise<RequestResponse<T>>;
+
+  post<T, P = unknown>(
     url: string,
     data?: unknown,
-    config?: ApiRequestConfig
+    config?: ApiRequestConfig<P>
   ): Promise<RequestResponse<T>>;
-  put<T>(
+
+  put<T, P = unknown>(
     url: string,
     data: unknown,
-    config?: ApiRequestConfig
+    config?: ApiRequestConfig<P>
   ): Promise<RequestResponse<T>>;
-  patch<T>(
+
+  patch<T, P = unknown>(
     url: string,
     data: unknown,
-    config?: ApiRequestConfig
+    config?: ApiRequestConfig<P>
   ): Promise<RequestResponse<T>>;
-  delete<T>(
+
+  delete<T, P = unknown>(
     url: string,
-    config?: ApiRequestConfig
+    config?: ApiRequestConfig<P>
   ): Promise<RequestResponse<T>>;
 }
 

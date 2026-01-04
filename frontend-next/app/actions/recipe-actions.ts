@@ -1,7 +1,33 @@
 "use server";
 
-import { recipeApi } from "@/lib/api/recipe";
-import { userApi } from "@/lib/api/user";
+import { ApiError } from "@/lib/api/api-error-type";
+import { createOneApiHouseholdsMealplansPost } from "@/lib/api/generated/households-mealplans/households-mealplans";
+import {
+  CreatePlanEntry,
+  GetRecipeAsZipApiRecipesSlugExportsZipGetParams,
+  RecipeInput,
+  RecipeShareTokenCreate,
+  UserRatingUpdate,
+} from "@/lib/api/generated/model";
+import {
+  getOneApiRecipesSlugGet,
+  updateOneApiRecipesSlugPut,
+} from "@/lib/api/generated/recipe-crud/recipe-crud";
+import {
+  getRecipeAsZipApiRecipesSlugExportsZipGet,
+  getRecipeZipTokenApiRecipesSlugExportsPost,
+} from "@/lib/api/generated/recipe-exports/recipe-exports";
+import { getSharedRecipeApiRecipesSharedTokenIdGet } from "@/lib/api/generated/recipe-shared/recipe-shared";
+import {
+  createOneApiSharedRecipesPost,
+  deleteOneApiSharedRecipesItemIdDelete,
+  getAllApiSharedRecipesGet,
+} from "@/lib/api/generated/shared-recipes/shared-recipes";
+import {
+  addFavoriteApiUsersIdFavoritesSlugPost,
+  removeFavoriteApiUsersIdFavoritesSlugDelete,
+  setRatingApiUsersIdRatingsSlugPost,
+} from "@/lib/api/generated/users-ratings/users-ratings";
 import { revalidatePath } from "next/cache";
 
 export async function toggleFavoriteAction(
@@ -12,9 +38,9 @@ export async function toggleFavoriteAction(
 ) {
   try {
     if (isCurrentlyFavorited) {
-      await userApi.unfavoriteRecipe(userId, recipeId);
+      await removeFavoriteApiUsersIdFavoritesSlugDelete(userId, recipeId);
     } else {
-      await userApi.favoriteRecipe(userId, recipeId);
+      await addFavoriteApiUsersIdFavoritesSlugPost(userId, recipeId);
     }
     revalidatePath(`/recipes/${recipeSlug}`);
     return { success: true };
@@ -24,39 +50,49 @@ export async function toggleFavoriteAction(
   }
 }
 
-export async function addToMealPlanAction(recipeId: string) {
-  return { success: true };
-}
-
 export async function rateRecipeAction(
   userId: string,
   recipe_slug: string,
-  rating: number,
-  isFavorite: boolean
+  rating: UserRatingUpdate
 ) {
   try {
-    // Assuming your API has a method for this
-    await userApi.setRecipeRating(userId, recipe_slug, rating, isFavorite);
+    await setRatingApiUsersIdRatingsSlugPost(userId, recipe_slug, rating);
     revalidatePath(`/recipes/${recipe_slug}`);
     return { success: true };
   } catch (error) {
-    console.error("Failed to rate recipe", error);
-    return { success: false };
+    let errorData = null;
+    if (error instanceof ApiError) {
+      errorData = {
+        message: error.message,
+        status: error.status,
+        details: error.details,
+        debug: error.debug,
+      };
+      console.error("API Error:", JSON.stringify(errorData, null, 2));
+    } else {
+      console.error("Unknown Error:", error);
+      errorData = { message: "An unexpected error occurred" };
+    }
+    return { success: false, error: errorData };
   }
 }
 
 export async function getSharedRecipesAction(recipe_id: string) {
   try {
     // 1. Get the raw response
-    const apiResponse = await recipeApi.getSharedLinks(recipe_id);
-    const finalArray =
-      "sharedRecipes" in apiResponse ? apiResponse.sharedRecipes : apiResponse;
+    const sharedRecipes = await getAllApiSharedRecipesGet({
+      recipe_id,
+    });
     return {
       success: true,
-      sharedRecipes: finalArray || [],
+      sharedRecipes,
     };
   } catch (error) {
-    console.error("Failed to get shared recipes", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return {
       success: false,
       sharedRecipes: [],
@@ -65,19 +101,21 @@ export async function getSharedRecipesAction(recipe_id: string) {
 }
 
 export async function createSharedRecipeLinkAction(
-  recipe_id: string,
-  expirationDate?: number
+  recipeShareTokenCreate: RecipeShareTokenCreate
 ) {
   try {
-    const recipe = await recipeApi.createSharedLink(recipe_id, expirationDate);
-    const sharedRecipes = await recipeApi.getSharedLinks(recipe_id);
-    const finalArray =
-      "sharedRecipes" in sharedRecipes
-        ? sharedRecipes.sharedRecipes
-        : sharedRecipes;
-    return { success: true, sharedRecipes: finalArray || [] };
+    console.log("Creating shared recipe link", recipeShareTokenCreate);
+    await createOneApiSharedRecipesPost(recipeShareTokenCreate);
+    const sharedRecipes = await getAllApiSharedRecipesGet({
+      recipe_id: recipeShareTokenCreate.recipeId,
+    });
+    return { success: true, sharedRecipes };
   } catch (error) {
-    console.error("Failed to create shared recipe link", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return { success: false };
   }
 }
@@ -87,50 +125,95 @@ export async function deleteSharedRecipeLinkAction(
   recipe_id: string
 ) {
   try {
-    await recipeApi.deleteSharedLink(share_id);
-    const sharedRecipes = await recipeApi.getSharedLinks(recipe_id);
-    const finalArray =
-      "sharedRecipes" in sharedRecipes
-        ? sharedRecipes.sharedRecipes
-        : sharedRecipes;
-    return { success: true, sharedRecipes: finalArray || [] };
+    await deleteOneApiSharedRecipesItemIdDelete(share_id);
+    const sharedRecipes = await getAllApiSharedRecipesGet({ recipe_id });
+    return { success: true, sharedRecipes };
   } catch (error) {
-    console.error("Failed to delete shared recipe link", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return { success: false };
   }
 }
 
 export async function updateRecipePrivacyAction(
-  recipe_id: string,
+  recipe_slug: string,
   isPublic: boolean
 ) {
   try {
-    await recipeApi.updateRecipePrivacy(recipe_id, isPublic);
-    revalidatePath(`/recipes/${recipe_id}`);
+    // fetch the full recipe, update privacy, then save
+    const recipe = await getOneApiRecipesSlugGet(recipe_slug);
+    recipe.settings = {
+      ...recipe.settings,
+      public: isPublic,
+    };
+
+    await updateOneApiRecipesSlugPut(recipe_slug, recipe as RecipeInput);
+    revalidatePath(`/recipes/${recipe_slug}`);
     return { success: true };
   } catch (error) {
-    console.error("Failed to toggle recipe public status", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return { success: false };
   }
 }
 
-export async function downloadRecipeAction(recipeSlug: string) {
+export async function addToMealPlanAction(mealPlanEntry: CreatePlanEntry) {
   try {
-    const zip = await recipeApi.exportRecipeAsZip(recipeSlug);
+    await createOneApiHouseholdsMealplansPost(mealPlanEntry);
+    return { success: true };
+  } catch (error) {
+    let errorData = null;
+    if (error instanceof ApiError) {
+      errorData = {
+        message: error.message,
+        status: error.status,
+        details: error.details,
+        debug: error.debug,
+      };
+      console.error("API Error:", JSON.stringify(errorData, null, 2));
+    } else {
+      console.error("Unknown Error:", error);
+      errorData = { message: "An unexpected error occurred" };
+    }
+    return { success: false, error: errorData };
+  }
+}
+
+export async function downloadRecipeAction(
+  slug: string,
+  params: GetRecipeAsZipApiRecipesSlugExportsZipGetParams
+) {
+  try {
+    const zip = await getRecipeAsZipApiRecipesSlugExportsZipGet(slug, params);
     return { success: true, recipe: zip };
   } catch (error) {
-    console.error("Failed to download recipe", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return { success: false };
   }
 }
 
 export async function getRecipeDownloadTokenAction(recipeSlug: string) {
   try {
-    // Only fetch the token, don't download the zip here
-    const tokenResponse = await recipeApi.getExportToken(recipeSlug);
+    const tokenResponse = await getRecipeZipTokenApiRecipesSlugExportsPost(
+      recipeSlug
+    );
     return { success: true, token: tokenResponse.token };
   } catch (error) {
-    console.error("Failed to get download token", error);
+    if (error instanceof ApiError) {
+      console.error("Error:", JSON.stringify(error.details, null, 2));
+    } else {
+      console.error("Failed to fetch shared recipes", error);
+    }
     return { success: false };
   }
 }

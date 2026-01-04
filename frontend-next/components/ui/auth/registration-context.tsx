@@ -1,6 +1,6 @@
 "use client";
-
-import { authApi } from "@/lib/api/auth";
+import { getTokenApiAuthTokenPost } from "@/lib/api/generated/users-authentication/users-authentication";
+import { registerNewUserApiUsersRegisterPost } from "@/lib/api/generated/users-registration/users-registration";
 import { validatorsApi } from "@/lib/api/public/validators";
 import { useRouter } from "next/navigation";
 import {
@@ -267,8 +267,8 @@ export function RegistrationProvider({ children }: { children: ReactNode }) {
           seedData: data.seedData || false,
         };
 
-        await authApi.registerUser(user);
-        await authApi.fetchToken({
+        await registerNewUserApiUsersRegisterPost(user);
+        await getTokenApiAuthTokenPost({
           username: data.username!,
           password: data.password!,
           remember_me: true,

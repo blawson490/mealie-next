@@ -79,6 +79,20 @@ export const API_ROUTES = {
         `/api/recipes/shared/${encodeURIComponent(token)}`,
     },
   },
+  MEALPLANS: {
+    LIST: "/api/households/mealplans",
+    CRUD: {
+      CREATE: "/api/households/mealplans",
+      GET: (mealplan_id: string) =>
+        `/api/households/mealplans/${encodeURIComponent(mealplan_id)}`,
+      UPDATE: (mealplan_id: string) =>
+        `/api/households/mealplans/${encodeURIComponent(mealplan_id)}`,
+      DELETE: (mealplan_id: string) =>
+        `/api/households/mealplans/${encodeURIComponent(mealplan_id)}`,
+    },
+    TODAY: "/api/households/mealplans/today",
+    RANDOM: "/api/households/mealplans/random",
+  },
   MEDIA: {
     RECIPES: {
       IMAGE: (
